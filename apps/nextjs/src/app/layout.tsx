@@ -30,9 +30,10 @@ const fontHeading = localFont({
   variable: "--font-heading",
 });
 
-export function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }));
-}
+// 禁用静态生成
+// export function generateStaticParams() {
+//   return i18n.locales.map((locale) => ({ lang: locale }));
+// }
 
 export const metadata = {
   title: {
@@ -78,7 +79,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider 
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_dummy_key_for_build"}
+    >
       <html lang="en" suppressHydrationWarning>
         <head />
         {/*<Suspense>*/}

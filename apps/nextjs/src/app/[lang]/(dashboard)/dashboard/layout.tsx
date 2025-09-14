@@ -18,9 +18,10 @@ interface DashboardLayoutProps {
   };
 }
 
-export function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }));
-}
+// 禁用静态生成
+// export function generateStaticParams() {
+//   return i18n.locales.map((locale) => ({ lang: locale }));
+// }
 
 export default async function DashboardLayout({
   children,

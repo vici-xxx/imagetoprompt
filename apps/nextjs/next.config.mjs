@@ -23,6 +23,7 @@ const config = {
   pageExtensions: ["ts", "tsx", "mdx"],
   experimental: {
     mdxRs: true,
+    missingSuspenseWithCSRBailout: false,
     // serverActions: true,
   },
   images: {
@@ -38,11 +39,13 @@ const config = {
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
-  // 强制所有页面为动态渲染
-  experimental: {
-    ...config.experimental,
-    missingSuspenseWithCSRBailout: false,
+  // 禁用静态优化
+  swcMinify: false,
+  compiler: {
+    removeConsole: false,
   },
+  // 禁用静态生成
+  distDir: ".next",
 };
 
 export default withNextDevtools(withMDX()(config));
