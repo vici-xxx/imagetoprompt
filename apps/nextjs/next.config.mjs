@@ -33,7 +33,7 @@ const config = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   output: "standalone",
-  // 完全禁用静态生成和预渲染
+  // 完全禁用静态生成
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   generateBuildId: async () => {
@@ -44,9 +44,11 @@ const config = {
   compiler: {
     removeConsole: false,
   },
-  // 强制所有页面为动态渲染 - 移除循环引用
-  // 禁用静态生成
+  // 强制所有页面为动态渲染
   distDir: ".next",
+  // 完全禁用静态生成
+  generateStaticParams: false,
+  // 强制所有页面为动态渲染 - 移除循环引用
 };
 
 export default withNextDevtools(withMDX()(config));
