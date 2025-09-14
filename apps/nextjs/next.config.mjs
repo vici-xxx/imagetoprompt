@@ -42,6 +42,11 @@ const config = {
   distDir: ".next",
   // 完全禁用静态生成
   generateStaticParams: false,
+  // 强制所有页面为动态渲染
+  experimental: {
+    ...config.experimental,
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default withNextDevtools(withMDX()(config));
