@@ -40,6 +40,8 @@ const config = {
     removeConsole: false,
   },
   distDir: ".next",
+  // 完全禁用静态生成
+  generateStaticParams: false,
 };
 
 export default withNextDevtools(withMDX()(config));
