@@ -32,9 +32,8 @@ const config = {
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  output: "export",
-  distDir: "dist",
-  // 完全禁用静态生成
+  output: "standalone",
+  // 完全禁用静态生成和预渲染
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   generateBuildId: async () => {
@@ -45,6 +44,7 @@ const config = {
   compiler: {
     removeConsole: false,
   },
+  // 强制所有页面为动态渲染 - 移除循环引用
   // 禁用静态生成
   distDir: ".next",
 };
