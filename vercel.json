@@ -1,14 +1,9 @@
 {
-  "github": {
-    "silent": true
-  },
   "buildCommand": "cd apps/nextjs && SKIP_ENV_VALIDATION=true bun run build",
   "outputDirectory": "apps/nextjs/.next",
   "installCommand": "bun install",
   "framework": "nextjs",
   "env": {
-    "SKIP_ENV_VALIDATION": "true",
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_dummy_key_for_build",
-    "CLERK_SECRET_KEY": "sk_test_dummy_key_for_build"
+    "SKIP_ENV_VALIDATION": "true"
   }
 }
