@@ -32,6 +32,17 @@ const config = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   output: "standalone",
+  // 完全禁用静态生成
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
+  // 强制所有页面为动态渲染
+  experimental: {
+    ...config.experimental,
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default withNextDevtools(withMDX()(config));
