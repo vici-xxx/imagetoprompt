@@ -6,7 +6,6 @@
   "outputDirectory": "apps/nextjs/.next",
   "installCommand": "bun install",
   "framework": "nextjs",
-  "rootDirectory": "apps/nextjs",
   "env": {
     "SKIP_ENV_VALIDATION": "true",
     "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_dummy_key_for_build",
