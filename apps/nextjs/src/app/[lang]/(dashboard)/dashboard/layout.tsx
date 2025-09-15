@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 import { getCurrentUser } from "@saasfly/auth";
 

@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+export const dynamic = "force-dynamic";
 import { Inter as FontSans } from "next/font/google";
 import localFont from "next/font/local";
 
