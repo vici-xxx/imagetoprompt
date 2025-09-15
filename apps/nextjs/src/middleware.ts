@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-import { middleware as clerkMiddleware } from "./utils/clerk";
+import { middleware } from "./utils/clerk";
 
 export const config = {
   matcher: [
@@ -10,13 +9,4 @@ export const config = {
   ],
 };
 
-export default function middleware(req: Request) {
-  const hasClerkEnv =
-    !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-    !!process.env.CLERK_SECRET_KEY;
-  if (!hasClerkEnv) {
-    return NextResponse.next();
-  }
-  // @ts-expect-error - Next types differ between edge runtime wrappers
-  return clerkMiddleware(req);
-}
+export default middleware

@@ -1,5 +1,4 @@
 import { ClerkProvider } from "@clerk/nextjs";
-export const dynamic = "force-dynamic";
 import { Inter as FontSans } from "next/font/google";
 import localFont from "next/font/local";
 
@@ -31,10 +30,9 @@ const fontHeading = localFont({
   variable: "--font-heading",
 });
 
-// 禁用静态生成
-// export function generateStaticParams() {
-//   return i18n.locales.map((locale) => ({ lang: locale }));
-// }
+export function generateStaticParams() {
+  return i18n.locales.map((locale) => ({ lang: locale }));
+}
 
 export const metadata = {
   title: {
@@ -80,9 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider 
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"}
-    >
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <head />
         {/*<Suspense>*/}

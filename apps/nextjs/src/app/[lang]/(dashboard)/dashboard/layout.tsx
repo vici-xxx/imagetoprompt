@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-export const dynamic = "force-dynamic";
 
 import { getCurrentUser } from "@saasfly/auth";
 
@@ -19,10 +18,9 @@ interface DashboardLayoutProps {
   };
 }
 
-// 禁用静态生成
-// export function generateStaticParams() {
-//   return i18n.locales.map((locale) => ({ lang: locale }));
-// }
+export function generateStaticParams() {
+  return i18n.locales.map((locale) => ({ lang: locale }));
+}
 
 export default async function DashboardLayout({
   children,
