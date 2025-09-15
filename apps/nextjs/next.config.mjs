@@ -1,5 +1,5 @@
 // @ts-check
-import { withNextDevtools } from "@next-devtools/core/plugin";
+// Devtools plugin removed to avoid potential initialization issues
 // import "@saasfly/api/env"
 import withMDX from "@next/mdx";
 
@@ -38,6 +38,7 @@ const config = {
 };
 
 const withMdx = withMDX();
-const wrappedConfig = withNextDevtools(withMdx(config));
 
-export default wrappedConfig;
+export default withMdx({
+  ...config,
+});
