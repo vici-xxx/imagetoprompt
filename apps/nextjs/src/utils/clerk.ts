@@ -45,6 +45,21 @@ export function isNoNeedProcess(request: NextRequest): boolean {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 export const middleware = clerkMiddleware(async (auth, req: NextRequest) => {
+  // If Clerk env is missing, bypass auth to avoid 500 in middleware
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || !process.env.CLERK_SECRET_KEY) {
+    if (isNoNeedProcess(req) || isNoRedirect(req)) return NextResponse.next();
+    const pathname = req.nextUrl.pathname;
+    const pathnameIsMissingLocale = i18n.locales.every(
+      (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`,
+    );
+    if (pathnameIsMissingLocale) {
+      const locale = getLocale(req);
+      return NextResponse.redirect(
+        new URL(`/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`, req.url),
+      );
+    }
+    return NextResponse.next();
+  }
   if (isNoNeedProcess(req)) {
     return null;
   }
