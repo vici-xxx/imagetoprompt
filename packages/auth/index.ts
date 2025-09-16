@@ -1,4 +1,4 @@
-import { getSessionUser } from "./clerk";
+import { getCurrentUser as getCurrentUserNextAuth, authOptions as nextAuthOptions } from "./nextauth";
 
 export interface User {
   id: string;
@@ -16,12 +16,8 @@ declare global {
   }
 }
 
-export const authOptions = {
-  pages: {
-    signIn: "/login-clerk",
-  },
-}
+export const authOptions = nextAuthOptions;
 
 export async function getCurrentUser() {
-  return await getSessionUser();
+  return await getCurrentUserNextAuth();
 }

@@ -68,7 +68,7 @@ export default async function IndexPage({
 
   return (
     <>
-      <section className="container">
+      <section className="container pb-16 md:pb-24 xl:pb-24">
         <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
           <div className="flex flex-col items-start h-full">
             <BackgroundLines className="h-full">
@@ -130,7 +130,7 @@ export default async function IndexPage({
         </div>
       </section>
 
-      <section className="container mt-8 md:mt-[-180px] xl:mt-[-180px]">
+      <section className="container mt-8 md:mt-16 xl:mt-16">
         <FeaturesGrid dict={dict.marketing.features_grid}/>
       </section>
 
