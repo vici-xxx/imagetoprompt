@@ -61,10 +61,10 @@
     "three-globe": "2.31.0"
   },
   "devDependencies": {
-    "@saasfly/eslint-config": "workspace:*",
-    "@saasfly/prettier-config": "workspace:*",
-    "@saasfly/typescript-config": "workspace:*",
-    "@saasfly/tailwind-config": "workspace:*",
+    "@saasfly/eslint-config": "0.1.0",
+    "@saasfly/prettier-config": "0.1.0",
+    "@saasfly/typescript-config": "0.1.0",
+    "@saasfly/tailwind-config": "0.1.0",
     "@types/react": "18.3.3",
     "@tanstack/react-table": "8.17.0",
     "date-fns": "3.3.1",
