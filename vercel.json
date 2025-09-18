@@ -1,7 +1,7 @@
 {
   "github": { "silent": true },
-  "installCommand": "npm install",
-  "buildCommand": "cd apps/nextjs && npm run build:vercel",
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "cd apps/nextjs && bun run build:vercel",
   "framework": "nextjs",
   "outputDirectory": "apps/nextjs/.next"
 }

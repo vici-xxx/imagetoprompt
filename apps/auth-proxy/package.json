@@ -12,10 +12,10 @@
     "@auth/core": "0.31.0"
   },
   "devDependencies": {
-    "@saasfly/eslint-config": "0.1.0",
-    "@saasfly/prettier-config": "0.1.0",
-    "@saasfly/tailwind-config": "0.1.0",
-    "@saasfly/typescript-config": "0.1.0",
+    "@saasfly/eslint-config": "workspace:*",
+    "@saasfly/prettier-config": "workspace:*",
+    "@saasfly/tailwind-config": "workspace:*",
+    "@saasfly/typescript-config": "workspace:*",
     "@types/node": "20.12.12",
     "eslint": "8.57.0",
     "h3": "1.11.1",

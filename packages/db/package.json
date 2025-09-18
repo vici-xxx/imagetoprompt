@@ -21,9 +21,9 @@
     "@vercel/postgres-kysely": "0.8.0"
   },
   "devDependencies": {
-    "@saasfly/eslint-config": "0.1.0",
-    "@saasfly/prettier-config": "0.1.0",
-    "@saasfly/typescript-config": "0.1.0",
+    "@saasfly/eslint-config": "workspace:*",
+    "@saasfly/prettier-config": "workspace:*",
+    "@saasfly/typescript-config": "workspace:*",
     "@types/pg": "8.11.0",
     "dotenv-cli": "7.3.0",
     "eslint": "8.57.0",
