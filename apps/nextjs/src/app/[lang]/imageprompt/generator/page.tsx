@@ -92,6 +92,33 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
     setIsLoading(true);
     setError("");
     setPrompt("");
+    
+    // First test the simple API
+    try {
+      console.log("Testing simple API first...");
+      const testRes = await fetch("/api/test", {
+        method: "POST",
+        body: (() => {
+          const fd = new FormData();
+          fd.append("file", file);
+          return fd;
+        })(),
+      });
+      console.log("Test API response status:", testRes.status);
+      const testData = await testRes.json();
+      console.log("Test API response data:", testData);
+      
+      if (!testRes.ok) {
+        setError(`Test API failed: ${testData?.error || "Unknown error"}`);
+        return;
+      }
+    } catch (e) {
+      console.error("Test API error:", e);
+      setError(`Test API error: ${e instanceof Error ? e.message : "Unknown error"}`);
+      return;
+    }
+    
+    // Now try the actual imageprompt API
     try {
       const fd = new FormData();
       fd.append("file", file);
