@@ -6,7 +6,10 @@ import "@saasfly/auth/env.mjs";
 // import "@saasfly/api/env"
 import withMDX from "@next/mdx";
 
-!process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
+// Skip env validation in production builds to avoid config loading issues
+if (!process.env.SKIP_ENV_VALIDATION && process.env.NODE_ENV !== "production") {
+  await import("./src/env.mjs");
+}
 
 /** @type {import("next").NextConfig} */
 const config = {
