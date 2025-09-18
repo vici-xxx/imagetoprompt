@@ -15,6 +15,10 @@ export const env = createEnv({
     COZE_WORKFLOW_ID: z.string().min(1),
     COZE_API_BASE_URL: z.string().url().optional(),
     COZE_SPACE_ID: z.string().optional(),
+    RESEND_API_KEY: z.string().min(1),
+    RESEND_FROM: z.string().min(1),
+    POSTGRES_URL: z.string().min(1),
+    SKIP_ENV_VALIDATION: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().min(1),
@@ -38,6 +42,10 @@ export const env = createEnv({
     COZE_WORKFLOW_ID: process.env.COZE_WORKFLOW_ID,
     COZE_API_BASE_URL: process.env.COZE_API_BASE_URL,
     COZE_SPACE_ID: process.env.COZE_SPACE_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_FROM: process.env.RESEND_FROM,
+    POSTGRES_URL: process.env.POSTGRES_URL,
+    SKIP_ENV_VALIDATION: process.env.SKIP_ENV_VALIDATION,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_STRIPE_PRO_PRODUCT_ID:
       process.env.NEXT_PUBLIC_STRIPE_PRO_PRODUCT_ID,
