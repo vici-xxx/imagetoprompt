@@ -47,14 +47,6 @@ export default async function IndexPage({
         </div>
       </section>
 
-      <section id="inspiration" className="container py-16">
-        <h2 className="text-3xl font-semibold">灵感画廊</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {Array.from({length:6}).map((_,i)=> (
-            <div key={i} className="aspect-[4/3] rounded-xl border overflow-hidden bg-muted/30" />
-          ))}
-        </div>
-      </section>
 
       <section id="imageprompt-faq" className="container pb-24">
         <h2 className="text-3xl font-semibold">常见问题</h2>

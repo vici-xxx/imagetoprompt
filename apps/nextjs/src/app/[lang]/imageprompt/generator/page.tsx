@@ -54,12 +54,14 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
   const [error, setError] = useState<string>("");
 
   function onSelect(f: File) {
+    console.log("onSelect called with file:", f.name);
     setFile(f);
     const url = URL.createObjectURL(f);
     setPreview(url);
     setPrompt("");
     setError("");
     setFileName(f.name || "");
+    console.log("File state updated, preview URL created");
   }
 
   async function onDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -69,12 +71,20 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
   }
 
   function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log("File upload triggered", e.target.files);
     const f = e.target.files?.[0];
-    if (f) onSelect(f);
+    if (f) {
+      console.log("File selected:", f.name, f.size, f.type);
+      onSelect(f);
+    }
   }
 
   async function generate() {
-    if (!file) return;
+    if (!file) {
+      console.log("No file selected, cannot generate");
+      return;
+    }
+    console.log("Starting generation with file:", file.name);
     setIsLoading(true);
     setError("");
     setPrompt("");
@@ -85,11 +95,14 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
       fd.append("input_key", "img");
       fd.append("promptType", promptType);
       fd.append("useQuery", "");
+      console.log("Sending request to /api/imageprompt");
       const res = await fetch("/api/imageprompt", {
         method: "POST",
         body: fd,
       });
+      console.log("Response status:", res.status);
       const data = await res.json();
+      console.log("Response data:", data);
       if (!res.ok) {
         setError(typeof data === "string" ? data : data?.error || "Failed to generate prompt");
         return;
@@ -100,6 +113,7 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
       }
       setPrompt(data?.prompt || "");
     } catch (e) {
+      console.error("Generation error:", e);
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setIsLoading(false);
