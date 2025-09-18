@@ -2,5 +2,6 @@
   "github": { "silent": true },
   "installCommand": "bun install",
   "buildCommand": "cd apps/nextjs && bun run build:vercel",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "outputDirectory": "apps/nextjs/.next"
 }
