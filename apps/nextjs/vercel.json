@@ -1,6 +1,6 @@
 {
-  "buildCommand": "bun run build",
-  "installCommand": "bun install",
+  "buildCommand": "bun with-env next build",
+  "installCommand": "cd ../.. && bun install",
   "framework": "nextjs"
 }
 
