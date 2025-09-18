@@ -1,5 +1,6 @@
 {
-  "github": {
-    "silent": true
-  }
+  "github": { "silent": true },
+  "installCommand": "bun install",
+  "buildCommand": "cd apps/nextjs && bun run build:vercel",
+  "framework": "nextjs"
 }
