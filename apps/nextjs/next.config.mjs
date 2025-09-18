@@ -1,15 +1,15 @@
 // @ts-check
-import "./src/env.mjs";
-import "@saasfly/auth/env.mjs";
+// import "./src/env.mjs";
+// import "@saasfly/auth/env.mjs";
 
 // import { withNextDevtools } from "@next-devtools/core/plugin";
 // import "@saasfly/api/env"
 import withMDX from "@next/mdx";
 
 // Skip env validation in production builds to avoid config loading issues
-if (!process.env.SKIP_ENV_VALIDATION && process.env.NODE_ENV !== "production") {
-  await import("./src/env.mjs");
-}
+// if (!process.env.SKIP_ENV_VALIDATION && process.env.NODE_ENV !== "production") {
+//   await import("./src/env.mjs");
+// }
 
 /** @type {import("next").NextConfig} */
 const config = {
