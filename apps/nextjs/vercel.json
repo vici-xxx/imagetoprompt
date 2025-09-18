@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bun with-env next build",
+  "buildCommand": "bun run build:vercel",
   "installCommand": "bun install",
   "framework": "nextjs"
 }
