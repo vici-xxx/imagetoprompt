@@ -66,8 +66,12 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
 
   async function onDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
+    console.log("File dropped", e.dataTransfer.files);
     const f = e.dataTransfer.files?.[0];
-    if (f) onSelect(f);
+    if (f) {
+      console.log("Dropped file:", f.name, f.size, f.type);
+      onSelect(f);
+    }
   }
 
   function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -150,7 +154,15 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
             <div className="mt-1 text-xs text-muted-foreground">{t.uploadSize}</div>
             <div className="mt-4 flex items-center justify-center gap-3">
               <input id="file-input" className="hidden" type="file" accept="image/*" onChange={onUpload} />
-              <label htmlFor="file-input"><Button size="sm">{t.chooseFile}</Button></label>
+              <Button 
+                size="sm" 
+                onClick={() => {
+                  console.log("Button clicked, triggering file input");
+                  document.getElementById('file-input')?.click();
+                }}
+              >
+                {t.chooseFile}
+              </Button>
               <span className="text-xs text-muted-foreground">{fileName || t.noFile}</span>
             </div>
           </div>
