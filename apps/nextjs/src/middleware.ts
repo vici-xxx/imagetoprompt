@@ -24,7 +24,7 @@ function getLocale(request: NextRequest): string {
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 跳过静态资源
+  // Skip static assets
   if (
     pathname.startsWith("/_next") ||
     pathname.match(/\.[^/]+$/)
@@ -32,7 +32,12 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 已带语言前缀，放行
+  // Bypass locale handling for API/TRPC routes
+  if (pathname.startsWith("/api") || pathname.startsWith("/trpc")) {
+    return NextResponse.next();
+  }
+
+  // Already has locale prefix
   const hasLocalePrefix = i18n.locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
@@ -40,7 +45,7 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 无语言前缀则重定向到默认/匹配语言
+  // Redirect to default/matched locale
   const locale = getLocale(request);
   const redirectURL = new URL(`/${locale}${pathname}`, request.url);
   return NextResponse.redirect(redirectURL);

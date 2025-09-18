@@ -1,180 +1,75 @@
 import Link from "next/link";
-import Image from "next/image";
-import { getDictionary } from "~/lib/get-dictionary";
-
-import { CodeCopy } from "~/components/code-copy";
-import { Comments } from "~/components/comments";
-import { FeaturesGrid } from "~/components/features-grid";
-import { RightsideMarketing } from "~/components/rightside-marketing";
-
-import { AnimatedTooltip } from "@saasfly/ui/animated-tooltip";
-import { BackgroundLines } from "@saasfly/ui/background-lines";
 import { Button } from "@saasfly/ui/button";
-import { ColourfulText } from "@saasfly/ui/colorful-text";
-import * as Icons from "@saasfly/ui/icons";
-
 import type { Locale } from "~/config/i18n-config";
-import {VideoScroll} from "~/components/video-scroll";
-
-const people = [
-  {
-    id: 1,
-    name: "tianzx",
-    designation: "CEO at Nextify",
-    image: "https://avatars.githubusercontent.com/u/10096899",
-    link: "https://x.com/nextify2024",
-  },
-  {
-    id: 2,
-    name: "jackc3",
-    designation: "Co-founder at Nextify",
-    image: "https://avatars.githubusercontent.com/u/10334353",
-    link: "https://x.com/BingxunYao",
-  },
-  {
-    id: 3,
-    name: "imesong",
-    designation: "Contributor",
-    image: "https://avatars.githubusercontent.com/u/3849293",
-  },
-  {
-    id: 4,
-    name: "ziveen",
-    designation: "Contributor",
-    image: "https://avatars.githubusercontent.com/u/22560152",
-  },
-  {
-    id: 5,
-    name: "Zenuncl",
-    designation: "Independent Software Developer",
-    image: "https://avatars.githubusercontent.com/u/3316062",
-  },
-  {
-    id: 6,
-    name: "Innei",
-    designation: "Indie Developer",
-    image: "https://avatars.githubusercontent.com/u/41265413",
-  },
-];
+import { getDictionary } from "~/lib/get-dictionary";
 
 export default async function IndexPage({
   params: { lang },
 }: {
-  params: {
-    lang: Locale;
-  };
+  params: { lang: Locale };
 }) {
   const dict = await getDictionary(lang);
-
   return (
     <>
-      <section className="container pb-16 md:pb-24 xl:pb-24">
-        <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
-          <div className="flex flex-col items-start h-full">
-            <BackgroundLines className="h-full">
-              <div className="flex flex-col pt-4 md:pt-36 lg:pt-36 xl:pt-36">
-                <div className="mt-20">
-                  <div
-                    className="mb-6 max-w-4xl text-left text-4xl font-semibold dark:text-zinc-100 md:text-5xl xl:text-5xl md:leading-[4rem] xl:leading-[4rem]">
-                    {dict.marketing.title || "Ship your apps to the world easier with "}
-                    <ColourfulText text="Saasfly"/>
-                  </div>
-                </div>
+      <section className="container py-20">
+        <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+          Create Better AI Art with <span className="text-primary">Image Prompt</span>
+        </h1>
+        <p className="mt-6 text-neutral-500 dark:text-neutral-400 max-w-2xl">
+          Inspire ideas, enhance image prompts, and create masterpieces with an all-in-one toolkit.
+        </p>
+        <div className="mt-8 flex gap-4">
+          <Link href={`/${lang}/imageprompt/generator`}><Button>{dict.marketing.get_started}</Button></Link>
+          <Link href="#imageprompt-faq"><Button variant="outline">FAQ</Button></Link>
+        </div>
+      </section>
 
-                <div className="mt-4">
-                  <span className="text-neutral-500 dark:text-neutral-400 sm:text-lg">
-                    {dict.marketing.sub_title || "Your complete All-in-One solution for building SaaS services."}
-                  </span>
-                </div>
-
-                <div
-                  className="mb-4 mt-6 flex w-full flex-col justify-center space-y-4 sm:flex-row sm:justify-start sm:space-x-8 sm:space-y-0 z-10">
-                  <Link href="https://github.com/saasfly/saasfly" target="_blank">
-                    <Button
-                      className="bg-blue-600 hover:bg-blue-500 text-white rounded-full text-lg px-6 h-12 font-medium">
-                      {dict.marketing.get_started}
-                      <Icons.ArrowRight className="h-5 w-5"/>
-                    </Button>
-                  </Link>
-
-                  <CodeCopy/>
-                </div>
-
-                <div className="flex xl:flex-row flex-col items-center justify-start mt-4 w-full">
-                  <div className="flex">
-                    <AnimatedTooltip items={people}/>
-                  </div>
-                  <div className="flex flex-col items-center justify-start ml-8">
-                    <div className="w-[340px]">
-                      <span className="font-semibold">9 </span>
-                      <span className="text-neutral-500 dark:text-neutral-400">{dict.marketing.contributors.contributors_desc}</span>
-                    </div>
-                    <div className="w-[340px]">
-                      <span
-                        className="text-neutral-500 dark:text-neutral-400">{dict.marketing.contributors.developers_first}</span>
-                      <ColourfulText text="2000"/>
-                      <span
-                        className="text-neutral-500 dark:text-neutral-400">{dict.marketing.contributors.developers_second}</span>
-                    </div>
-                  </div>
-                </div>
+      <section id="imageprompt-tools" className="container py-16">
+        <h2 className="text-3xl font-semibold">AI 图片提示工具</h2>
+        <p className="mt-2 text-neutral-500 dark:text-neutral-400">覆盖从灵感到生成的完整流程，保持 Saasfly 的配色与样式。</p>
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {[
+            {title:"图片转提示词",desc:"上传图片，一键生成高质量提示词，提升二次生成效果。",cta:"开始使用"},
+            {title:"提示词增强器",desc:"将你的想法扩写为更具描述性与风格化的提示词。",cta:"立即增强"},
+            {title:"AI 图片生成",desc:"用优化后的提示词快速生成精美图片。",cta:"生成图片"},
+            {title:"AI 图像描述",desc:"自动识别并详细描述图像内容，支持问答。",cta:"生成描述"},
+          ].map((card)=> (
+            <div key={card.title} className="rounded-xl border p-6 bg-background/50">
+              <h3 className="text-xl font-semibold">{card.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{card.desc}</p>
+              <div className="mt-4">
+                <Link href={`/${lang}/imageprompt/generator`}>
+                  <Button size="sm">{card.cta}</Button>
+                </Link>
               </div>
-            </BackgroundLines>
-          </div>
-
-          <div className="hidden h-full w-full xl:block bg-background">
-            <div className="flex flex-col pt-44">
-              <RightsideMarketing dict={dict.marketing.right_side}/>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      <section className="container mt-8 md:mt-16 xl:mt-16">
-        <FeaturesGrid dict={dict.marketing.features_grid}/>
-      </section>
-
-      <section className="container pt-24">
-        <div className="flex flex-col justify-center items-center pt-10">
-          <div className="text-lg text-neutral-500 dark:text-neutral-400">{dict.marketing.sponsor.title}</div>
-          <div className="mt-4 flex items-center gap-4">
-            <Link href="https://go.clerk.com/uKDp7Au" target="_blank">
-              <Image src="/images/clerk.png" width="48" height="48" alt="twillot"/>
-            </Link>
-            <Link href="https://www.twillot.com/" target="_blank">
-              <Image src="https://www.twillot.com/logo-128.png" width="48" height="48" alt="twillot"/>
-            </Link>
-            <Link href="https://www.setupyourpay.com/" target="_blank">
-              <Image src="https://www.setupyourpay.com/logo.png" width="48" height="48" alt="setupyourpay" />
-            </Link>
-            <Link href="https://opencollective.com/saasfly" target="_blank">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 hover:bg-accent dark:hover:bg-neutral-800/30">
-                <Icons.Heart className="w-5 h-5 fill-pink-600 text-pink-600 dark:fill-pink-700 dark:text-pink-700" />
-                <span className="text-sm font-medium text-neutral-500 dark:text-neutral-200">{dict.marketing.sponsor.donate || ''}</span>
-              </div>
-            </Link>
-          </div>
+      <section id="inspiration" className="container py-16">
+        <h2 className="text-3xl font-semibold">灵感画廊</h2>
+        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({length:6}).map((_,i)=> (
+            <div key={i} className="aspect-[4/3] rounded-xl border overflow-hidden bg-muted/30" />
+          ))}
         </div>
       </section>
 
-      <section className="container pt-8">
-        <VideoScroll dict={dict.marketing.video}/>
-      </section>
-
-      <section className="w-full px-8 pt-10 sm:px-0 sm:pt-24 md:px-0 md:pt-24 xl:px-0 xl:pt-24">
-        <div className="flex h-full w-full flex-col items-center pb-[100px] pt-10">
-          <div>
-            <h1 className="mb-6 text-center text-3xl font-bold dark:text-zinc-100 md:text-5xl">
-              {dict.marketing.people_comment.title}
-            </h1>
-          </div>
-          <div className="mb-6 text-lg text-neutral-500 dark:text-neutral-400">
-            {dict.marketing.people_comment.desc}
-          </div>
-
-          <div className="w-full overflow-x-hidden">
-            <Comments/>
-          </div>
+      <section id="imageprompt-faq" className="container pb-24">
+        <h2 className="text-3xl font-semibold">常见问题</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {[
+            {q:"什么是提示词（Image Prompt）？",a:"它是一组指令，帮助 AI 按你的期望生成图片。"},
+            {q:"是否免费？",a:"核心功能免费，可按需升级更多配额。"},
+            {q:"如何保护隐私？",a:"图像实时处理，不做持久化存储。"},
+            {q:"如何写好提示词？",a:"清晰描述主体、场景、风格、光线与细节。"},
+          ].map((item)=> (
+            <div key={item.q} className="rounded-xl border p-5 bg-background/50">
+              <div className="font-medium">{item.q}</div>
+              <div className="mt-1 text-sm text-muted-foreground">{item.a}</div>
+            </div>
+          ))}
         </div>
       </section>
     </>

@@ -76,8 +76,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
+    <html lang="en" suppressHydrationWarning translate="no">
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       {/*<Suspense>*/}
       {/*  <PostHogPageview />*/}
       {/*</Suspense>*/}
