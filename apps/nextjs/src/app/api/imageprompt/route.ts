@@ -12,22 +12,26 @@ function withTimeout(ms: number) {
 }
 
 async function fetchWithRetry(url: string, init: RequestInit, opts?: { attempts?: number; baseDelayMs?: number; timeoutMs?: number }) {
-	const attempts = opts?.attempts ?? 3;
-	const baseDelayMs = opts?.baseDelayMs ?? 500;
-	const timeoutMs = opts?.timeoutMs ?? 60_000;
+	const attempts = opts?.attempts ?? 2; // 减少重试次数
+	const baseDelayMs = opts?.baseDelayMs ?? 1000;
+	const timeoutMs = opts?.timeoutMs ?? 30_000; // 减少超时时间
 
 	let lastError: unknown;
 	for (let i = 0; i < attempts; i++) {
 		const to = withTimeout(timeoutMs);
 		try {
+			console.log(`Attempt ${i + 1}/${attempts} for ${url}`);
 			const resp = await fetch(url, { ...init, signal: to.controller.signal });
 			to.clear();
+			console.log(`Response status: ${resp.status}`);
 			return resp;
 		} catch (e) {
 			to.clear();
 			lastError = e;
+			console.error(`Attempt ${i + 1} failed:`, e);
 			if (i < attempts - 1) {
 				const delay = baseDelayMs * Math.pow(2, i);
+				console.log(`Retrying in ${delay}ms...`);
 				await new Promise((r) => setTimeout(r, delay));
 				continue;
 			}
@@ -106,94 +110,63 @@ export async function POST(request: Request) {
 		try {
 			const uploadUrl = `${COZE_BASE_URL}/v1/files/upload`;
 			console.log("Upload URL:", uploadUrl);
-			console.log("Upload headers:", { Authorization: `Bearer ${env.COZE_TOKEN?.substring(0, 10)}...` });
 			
 			uploadResp = await fetchWithRetry(uploadUrl, {
 				method: "POST",
 				headers: { Authorization: `Bearer ${env.COZE_TOKEN}` },
 				body: uploadForm,
-			}, { attempts: 2, baseDelayMs: 500, timeoutMs: 60_000 });
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 20_000 }); // 减少超时时间
 			
 			console.log("Upload response status:", uploadResp.status);
 		} catch (e) {
 			const message = e instanceof Error ? e.message : String(e);
 			console.error("Upload failed:", message);
-			return NextResponse.json({ error: "fetch_failed", stage: "upload", message }, { status: 502 });
+			return NextResponse.json({ error: "upload_failed", stage: "upload", message }, { status: 502 });
 		}
 
 		if (!uploadResp.ok) {
 			const text = await uploadResp.text();
+			console.error("Upload not ok:", text);
 			return NextResponse.json({ error: "upload_failed", status: uploadResp.status, details: text }, { status: 502 });
 		}
 
 		let uploadJson: any = {};
 		try {
 			uploadJson = await uploadResp.json();
-		} catch {}
+			console.log("Upload response:", uploadJson);
+		} catch (e) {
+			console.error("Failed to parse upload response:", e);
+			return NextResponse.json({ error: "upload_parse_failed" }, { status: 502 });
+		}
 
 		const fileId: string | undefined = uploadJson?.data?.id || uploadJson?.id;
 		if (!fileId) {
+			console.error("No file ID in response:", uploadJson);
 			return NextResponse.json({ error: "Upload response missing file id", raw: uploadJson }, { status: 502 });
 		}
 
-		// 2) 尝试从 Coze 获取文件 URL
-		let fileUrl: string | undefined;
-		try {
-			const fileInfoResp = await fetchWithRetry(`${COZE_BASE_URL}/v1/files/${fileId}`, {
-				method: "GET",
-				headers: { Authorization: `Bearer ${env.COZE_TOKEN}` },
-			}, { attempts: 2, baseDelayMs: 500, timeoutMs: 30_000 });
-			
-			if (fileInfoResp.ok) {
-				const fileInfo = await fileInfoResp.json();
-				fileUrl = fileInfo?.data?.url || fileInfo?.url;
-			}
-		} catch (e) {
-			// 忽略错误，使用备用方案
-		}
+		console.log("File ID:", fileId);
 
-		// 方案A: 使用 JSON 格式的 file_id（之前能工作的格式）
-		const parametersA: Record<string, unknown> = {
+		// 2) 运行工作流
+		console.log("Starting workflow execution...");
+		const parameters: Record<string, unknown> = {
 			[inputKey]: JSON.stringify({ file_id: String(fileId) }),
-			...(fileUrl ? { [`${inputKey}_url`]: fileUrl } : {}),
 			promptType,
 			useQuery,
 			language,
 		};
 
-		const payloadA = {
+		const payload = {
 			workflow_id: String(env.COZE_WORKFLOW_ID),
-			...(env.COZE_SPACE_ID ? { space_id: String(env.COZE_SPACE_ID) } : {}),
+			space_id: String(env.COZE_SPACE_ID),
 			is_async: false,
-			parameters: parametersA,
+			parameters,
 		};
 
-		let runResp = await fetchWithRetry(`${COZE_BASE_URL}/v1/workflow/run`, {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${env.COZE_TOKEN}`,
-				"Content-Type": "application/json",
-				Accept: "application/json",
-			},
-			body: JSON.stringify(payloadA),
-		}, { attempts: 2, baseDelayMs: 600, timeoutMs: 90_000 });
+		console.log("Workflow payload:", payload);
 
-		if (!runResp.ok) {
-			// 备用：尝试数组格式
-			const parametersB: Record<string, unknown> = {
-				[inputKey]: [String(fileId)],
-				...(fileUrl ? { [`${inputKey}_url`]: fileUrl } : {}),
-				promptType,
-				useQuery,
-				language,
-			};
-			const payloadB = {
-				workflow_id: String(env.COZE_WORKFLOW_ID),
-				...(env.COZE_SPACE_ID ? { space_id: String(env.COZE_SPACE_ID) } : {}),
-				is_async: false,
-				parameters: parametersB,
-			};
-
+		let runResp: Response;
+		try {
 			runResp = await fetchWithRetry(`${COZE_BASE_URL}/v1/workflow/run`, {
 				method: "POST",
 				headers: {
@@ -201,15 +174,22 @@ export async function POST(request: Request) {
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
-				body: JSON.stringify(payloadB),
-			}, { attempts: 2, baseDelayMs: 800, timeoutMs: 90_000 });
+				body: JSON.stringify(payload),
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 25_000 }); // 减少超时时间
+			
+			console.log("Workflow response status:", runResp.status);
+		} catch (e) {
+			const message = e instanceof Error ? e.message : String(e);
+			console.error("Workflow execution failed:", message);
+			return NextResponse.json({ error: "workflow_failed", stage: "execution", message }, { status: 502 });
+		}
 
-			if (!runResp.ok) {
-				const text = await runResp.text();
-				let runJson: any = {};
-				try { runJson = JSON.parse(text); } catch {}
-				return NextResponse.json({ error: "workflow_failed", status: runResp.status, details: text, coze_response: runJson, uploadJson, tried: { payloadA, payloadB } }, { status: 502 });
-			}
+		if (!runResp.ok) {
+			const text = await runResp.text();
+			console.error("Workflow not ok:", text);
+			let runJson: any = {};
+			try { runJson = JSON.parse(text); } catch {}
+			return NextResponse.json({ error: "workflow_failed", status: runResp.status, details: text, coze_response: runJson }, { status: 502 });
 		}
 
 		const text = await runResp.text();
