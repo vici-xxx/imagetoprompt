@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
 		let uploadResp: Response;
 		try {
-			const uploadUrl = `${COZE_BASE_URL}/v1/files/upload`;
+			const uploadUrl = `${COZE_BASE_URL}/open_api/v2/files/upload`;
 			console.log("Upload URL:", uploadUrl);
 			
 			uploadResp = await fetchWithRetry(uploadUrl, {
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
 		let runResp: Response;
 		try {
 			// 使用正确的 Coze API 端点
-			const workflowUrl = `${COZE_BASE_URL}/v1/workflow/run`;
+			const workflowUrl = `${COZE_BASE_URL}/open_api/v2/workflow/run`;
 			console.log("Workflow URL:", workflowUrl);
 			console.log("Workflow payload:", JSON.stringify(payload, null, 2));
 			
