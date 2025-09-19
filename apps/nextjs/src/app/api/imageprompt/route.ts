@@ -64,8 +64,12 @@ function parsePromptFromRunJson(runJson: any): { prompt: string; debugUrl?: stri
 
 export async function POST(request: Request) {
 	try {
+		console.log("=== ImagePrompt API Called ===");
 		const contentType = request.headers.get("content-type") || "";
+		console.log("Content-Type:", contentType);
+		
 		if (!contentType.includes("multipart/form-data")) {
+			console.log("Error: Expected multipart/form-data");
 			return NextResponse.json({ error: "Expected multipart/form-data" }, { status: 400 });
 		}
 
@@ -76,23 +80,44 @@ export async function POST(request: Request) {
 		const inputKey = (form.get("input_key") as string) || "img";
 		const language = (form.get("language") as string) || "en";
 
+		console.log("Form data:", { promptType, useQuery, inputKey, language });
+		console.log("File received:", file ? "Yes" : "No");
+
 		if (!(file instanceof File)) {
+			console.log("Error: Missing file");
 			return NextResponse.json({ error: "Missing file" }, { status: 400 });
 		}
 
+		console.log("File details:", { name: file.name, size: file.size, type: file.type });
+		console.log("Environment check:", {
+			hasCozeToken: !!env.COZE_TOKEN,
+			hasCozeWorkflowId: !!env.COZE_WORKFLOW_ID,
+			hasCozeApiBaseUrl: !!env.COZE_API_BASE_URL,
+			hasCozeSpaceId: !!env.COZE_SPACE_ID,
+			cozeApiBaseUrl: env.COZE_API_BASE_URL
+		});
+
 		// 1) 上传文件
+		console.log("Starting file upload to Coze...");
 		const uploadForm = new FormData();
 		uploadForm.append("file", file, file.name);
 
 		let uploadResp: Response;
 		try {
-			uploadResp = await fetchWithRetry(`${COZE_BASE_URL}/v1/files/upload`, {
+			const uploadUrl = `${COZE_BASE_URL}/v1/files/upload`;
+			console.log("Upload URL:", uploadUrl);
+			console.log("Upload headers:", { Authorization: `Bearer ${env.COZE_TOKEN?.substring(0, 10)}...` });
+			
+			uploadResp = await fetchWithRetry(uploadUrl, {
 				method: "POST",
 				headers: { Authorization: `Bearer ${env.COZE_TOKEN}` },
 				body: uploadForm,
 			}, { attempts: 2, baseDelayMs: 500, timeoutMs: 60_000 });
+			
+			console.log("Upload response status:", uploadResp.status);
 		} catch (e) {
 			const message = e instanceof Error ? e.message : String(e);
+			console.error("Upload failed:", message);
 			return NextResponse.json({ error: "fetch_failed", stage: "upload", message }, { status: 502 });
 		}
 
