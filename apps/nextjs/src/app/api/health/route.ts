@@ -17,10 +17,11 @@ export async function GET() {
       cozeSpaceId: env.COZE_SPACE_ID
     };
 
-    // 测试 Coze API 连接
+    // 测试 Coze API 连接 - 使用正确的端点
     let cozeTest = null;
     try {
-      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/v1/workflow/${env.COZE_WORKFLOW_ID}`, {
+      // 测试文件上传端点
+      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/v1/files`, {
         method: "GET",
         headers: { 
           Authorization: `Bearer ${env.COZE_TOKEN}`,

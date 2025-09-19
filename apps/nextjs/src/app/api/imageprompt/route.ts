@@ -3,7 +3,7 @@ import { env } from "~/env.mjs";
 
 export const runtime = "nodejs";
 
-const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.cn";
+const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.com";
 
 function withTimeout(ms: number) {
 	const controller = new AbortController();
@@ -167,7 +167,12 @@ export async function POST(request: Request) {
 
 		let runResp: Response;
 		try {
-			runResp = await fetchWithRetry(`${COZE_BASE_URL}/v1/workflow/run`, {
+			// 使用正确的 Coze API 端点
+			const workflowUrl = `${COZE_BASE_URL}/v1/workflow/run`;
+			console.log("Workflow URL:", workflowUrl);
+			console.log("Workflow payload:", JSON.stringify(payload, null, 2));
+			
+			runResp = await fetchWithRetry(workflowUrl, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${env.COZE_TOKEN}`,
