@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
 		let uploadResp: Response;
 		try {
-			const uploadUrl = `${COZE_BASE_URL}/open_api/v2/files/upload`;
+			const uploadUrl = `${COZE_BASE_URL}/open_api/v2/files`;
 			console.log("Upload URL:", uploadUrl);
 			
 			uploadResp = await fetchWithRetry(uploadUrl, {

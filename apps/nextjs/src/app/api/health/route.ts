@@ -20,19 +20,13 @@ export async function GET() {
     // 测试 Coze API 连接 - 使用正确的端点
     let cozeTest = null;
     try {
-      // 测试工作流端点
-      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/open_api/v2/workflow/run`, {
-        method: "POST",
+      // 测试简单的 API 端点
+      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/open_api/v2/workflow`, {
+        method: "GET",
         headers: { 
           Authorization: `Bearer ${env.COZE_TOKEN}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          workflow_id: env.COZE_WORKFLOW_ID,
-          space_id: env.COZE_SPACE_ID,
-          is_async: false,
-          parameters: {}
-        }),
         signal: AbortSignal.timeout(5000) // 5秒超时
       });
       
