@@ -93,60 +93,7 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
     setError("");
     setPrompt("");
     
-    // First test the simple API
-    try {
-      console.log("Testing simple API first...");
-      const testRes = await fetch("/api/test", {
-        method: "POST",
-        body: (() => {
-          const fd = new FormData();
-          fd.append("file", file);
-          return fd;
-        })(),
-      });
-      console.log("Test API response status:", testRes.status);
-      const testData = await testRes.json();
-      console.log("Test API response data:", testData);
-      
-      if (!testRes.ok) {
-        setError(`Test API failed: ${testData?.error || "Unknown error"}`);
-        return;
-      }
-    } catch (e) {
-      console.error("Test API error:", e);
-      setError(`Test API error: ${e instanceof Error ? e.message : "Unknown error"}`);
-      return;
-    }
     
-    // Test the simple imageprompt API
-    try {
-      console.log("Testing simple imageprompt API...");
-      const simpleRes = await fetch("/api/imageprompt-simple", {
-        method: "POST",
-        body: (() => {
-          const fd = new FormData();
-          fd.append("file", file);
-          return fd;
-        })(),
-      });
-      console.log("Simple imageprompt API response status:", simpleRes.status);
-      const simpleData = await simpleRes.json();
-      console.log("Simple imageprompt API response data:", simpleData);
-      
-      if (!simpleRes.ok) {
-        setError(`Simple imageprompt API failed: ${simpleData?.error || "Unknown error"}`);
-        return;
-      }
-      
-      // Show the test results
-      setPrompt(`API Test Results:\n${JSON.stringify(simpleData, null, 2)}`);
-      return; // Stop here for now
-      
-    } catch (e) {
-      console.error("Simple imageprompt API error:", e);
-      setError(`Simple imageprompt API error: ${e instanceof Error ? e.message : "Unknown error"}`);
-      return;
-    }
     
     // Now try the actual imageprompt API
     try {
