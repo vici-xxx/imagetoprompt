@@ -150,7 +150,7 @@ export async function POST(request: Request) {
 		// 2) 运行工作流
 		console.log("Starting workflow execution...");
 		const parameters: Record<string, unknown> = {
-			[inputKey]: JSON.stringify({ file_id: String(fileId) }),
+			[inputKey]: { file_id: String(fileId) },
 			promptType,
 			useQuery,
 			language,
@@ -211,7 +211,7 @@ export async function POST(request: Request) {
 				runJson, 
 				debug_url: debugUrl, 
 				execute_id: executeId,
-				sent_parameters: payloadA
+				sent_parameters: payload
 			} 
 		});
 	} catch (error) {

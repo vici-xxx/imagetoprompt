@@ -21,7 +21,7 @@ export async function GET() {
     let cozeTest = null;
     try {
       // 测试简单的 API 端点
-      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/v1/workflow`, {
+      const testResponse = await fetch(`${env.COZE_API_BASE_URL}/v1/files`, {
         method: "GET",
         headers: { 
           Authorization: `Bearer ${env.COZE_TOKEN}`,
