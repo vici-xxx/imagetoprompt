@@ -12,9 +12,9 @@ function withTimeout(ms: number) {
 }
 
 async function fetchWithRetry(url: string, init: RequestInit, opts?: { attempts?: number; baseDelayMs?: number; timeoutMs?: number }) {
-	const attempts = opts?.attempts ?? 2; // 减少重试次数
+	const attempts = opts?.attempts ?? 1; // 只尝试一次，避免重复超时
 	const baseDelayMs = opts?.baseDelayMs ?? 1000;
-	const timeoutMs = opts?.timeoutMs ?? 30_000; // 减少超时时间
+	const timeoutMs = opts?.timeoutMs ?? 60_000; // 增加超时时间到60秒
 
 	let lastError: unknown;
 	for (let i = 0; i < attempts; i++) {
@@ -180,7 +180,7 @@ export async function POST(request: Request) {
 					Accept: "application/json",
 				},
 				body: JSON.stringify(payload),
-			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 25_000 }); // 减少超时时间
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 60_000 }); // 增加超时时间到60秒
 			
 			console.log("Workflow response status:", runResp.status);
 		} catch (e) {
