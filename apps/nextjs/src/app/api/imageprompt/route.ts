@@ -3,7 +3,7 @@ import { env } from "~/env.mjs";
 
 export const runtime = "nodejs";
 
-const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.cn";
+const COZE_BASE_URL = "https://api.coze.cn";
 
 function withTimeout(ms: number) {
 	const controller = new AbortController();
@@ -108,14 +108,14 @@ export async function POST(request: Request) {
 
 		let uploadResp: Response;
 		try {
-			const uploadUrl = `${COZE_BASE_URL}/v1/files/upload`;
+			const uploadUrl = `${COZE_BASE_URL}/api/files`;
 			console.log("Upload URL:", uploadUrl);
 			
 			uploadResp = await fetchWithRetry(uploadUrl, {
 				method: "POST",
 				headers: { Authorization: `Bearer ${env.COZE_TOKEN}` },
 				body: uploadForm,
-			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 20_000 }); // 减少超时时间
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 60_000 }); // 增加超时时间到60秒
 			
 			console.log("Upload response status:", uploadResp.status);
 		} catch (e) {
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
 		let runResp: Response;
 		try {
 			// 使用正确的 Coze API 端点
-			const workflowUrl = `${COZE_BASE_URL}/v1/workflow/run`;
+			const workflowUrl = `${COZE_BASE_URL}/api/workflow`;
 			console.log("Workflow URL:", workflowUrl);
 			console.log("Workflow payload:", JSON.stringify(payload, null, 2));
 			
@@ -180,7 +180,7 @@ export async function POST(request: Request) {
 					Accept: "application/json",
 				},
 				body: JSON.stringify(payload),
-			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 30_000 }); // 减少超时时间到30秒
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 60_000 }); // 增加超时时间到60秒
 			
 			console.log("Workflow response status:", runResp.status);
 		} catch (e) {

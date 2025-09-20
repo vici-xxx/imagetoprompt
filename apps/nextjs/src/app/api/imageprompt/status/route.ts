@@ -3,7 +3,7 @@ import { env } from "~/env.mjs";
 
 export const runtime = "nodejs";
 
-const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.cn";
+const COZE_BASE_URL = "https://api.coze.cn";
 
 export async function GET(request: Request) {
 	try {
@@ -17,15 +17,15 @@ export async function GET(request: Request) {
 		console.log("Checking status for executeId:", executeId);
 
 		// 查询工作流执行状态
-		const statusUrl = `${COZE_BASE_URL}/v1/workflow/run/status`;
+		const statusUrl = `${COZE_BASE_URL}/api/workflow/${executeId}/status`;
+		console.log("Status URL:", statusUrl);
+		
 		const statusResp = await fetch(statusUrl, {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${env.COZE_TOKEN}`,
 				"Content-Type": "application/json",
 			},
-			// 添加查询参数
-			// Note: 根据 Coze API 文档调整查询参数
 		});
 
 		if (!statusResp.ok) {
