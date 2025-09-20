@@ -3,7 +3,7 @@ import { env } from "~/env.mjs";
 
 export const runtime = "nodejs";
 
-const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.com";
+const COZE_BASE_URL = env.COZE_API_BASE_URL || "https://api.coze.cn";
 
 function withTimeout(ms: number) {
 	const controller = new AbortController();
