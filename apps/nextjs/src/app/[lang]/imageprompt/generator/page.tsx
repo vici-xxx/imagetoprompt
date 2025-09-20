@@ -93,9 +93,6 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
     setError("");
     setPrompt("");
     
-    
-    
-    // Now try the actual imageprompt API
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -111,21 +108,73 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
       console.log("Response status:", res.status);
       const data = await res.json();
       console.log("Response data:", data);
+      
       if (!res.ok) {
         setError(typeof data === "string" ? data : data?.error || "Failed to generate prompt");
         return;
       }
+      
       if (data?.error) {
         setError(data?.error + (data?.details ? `: ${data.details}` : ""));
         return;
       }
-      setPrompt(data?.prompt || "");
+
+      // 检查是否是异步处理
+      if (data?.status === "processing" && data?.executeId) {
+        console.log("Async workflow started, polling for results...");
+        await pollForResult(data.executeId);
+      } else if (data?.prompt) {
+        // 同步处理完成
+        setPrompt(data.prompt);
+      } else {
+        setError("No prompt generated");
+      }
     } catch (e) {
       console.error("Generation error:", e);
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function pollForResult(executeId: string) {
+    const maxAttempts = 30; // 最多轮询30次
+    const pollInterval = 2000; // 每2秒轮询一次
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        console.log(`Polling attempt ${attempt}/${maxAttempts} for executeId: ${executeId}`);
+        
+        const res = await fetch(`/api/imageprompt/status?executeId=${executeId}`);
+        const data = await res.json();
+        
+        console.log("Polling response:", data);
+        
+        if (data?.status === "completed" && data?.prompt) {
+          setPrompt(data.prompt);
+          return;
+        } else if (data?.status === "failed") {
+          setError(data?.error || "Workflow execution failed");
+          return;
+        } else if (data?.status === "processing") {
+          // 继续轮询
+          await new Promise(resolve => setTimeout(resolve, pollInterval));
+          continue;
+        } else {
+          setError("Unknown status response");
+          return;
+        }
+      } catch (e) {
+        console.error(`Polling attempt ${attempt} failed:`, e);
+        if (attempt === maxAttempts) {
+          setError("Failed to get result after multiple attempts");
+          return;
+        }
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+      }
+    }
+    
+    setError("Timeout waiting for result");
   }
 
   return (
@@ -205,7 +254,7 @@ export default function GeneratorPage({ params }: { params: { lang: string } }) 
         </select>
 
         <Button onClick={generate} disabled={!file || isLoading}>
-          {isLoading ? (lang === "zh" ? "生成中..." : "Generating...") : t.btnGenerate}
+          {isLoading ? (uiLang === "zh" ? "生成中..." : "Generating...") : t.btnGenerate}
         </Button>
       </div>
 

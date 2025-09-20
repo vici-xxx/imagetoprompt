@@ -159,7 +159,7 @@ export async function POST(request: Request) {
 		const payload = {
 			workflow_id: String(env.COZE_WORKFLOW_ID),
 			space_id: String(env.COZE_SPACE_ID),
-			is_async: false,
+			is_async: true, // 改为异步处理
 			parameters,
 		};
 
@@ -180,7 +180,7 @@ export async function POST(request: Request) {
 					Accept: "application/json",
 				},
 				body: JSON.stringify(payload),
-			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 60_000 }); // 增加超时时间到60秒
+			}, { attempts: 1, baseDelayMs: 1000, timeoutMs: 30_000 }); // 减少超时时间到30秒
 			
 			console.log("Workflow response status:", runResp.status);
 		} catch (e) {
@@ -203,7 +203,28 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "workflow_json_parse_failed", details: text, uploadJson }, { status: 502 });
 		}
 
+		// 检查是否是异步工作流
+		if (payload.is_async) {
+			const executeId = runJson?.data?.execute_id || runJson?.execute_id;
+			if (executeId) {
+				console.log("Async workflow started, executeId:", executeId);
+				return NextResponse.json({
+					status: "processing",
+					executeId,
+					fileId,
+					workflowId: env.COZE_WORKFLOW_ID,
+					message: "Workflow started asynchronously, please check status"
+				});
+			}
+		}
+
+		// 同步工作流处理
 		const { prompt, debugUrl, executeId } = parsePromptFromRunJson(runJson);
+		if (!prompt) {
+			console.error("No prompt in response:", runJson);
+			return NextResponse.json({ error: "No prompt generated", raw: runJson }, { status: 502 });
+		}
+
 		return NextResponse.json({ 
 			prompt, 
 			debug: { 
