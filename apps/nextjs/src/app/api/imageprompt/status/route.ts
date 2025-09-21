@@ -16,8 +16,8 @@ export async function GET(request: Request) {
 
 		console.log("Checking status for executeId:", executeId);
 
-		// 查询工作流执行状态
-		const statusUrl = `${COZE_BASE_URL}/api/workflow/${executeId}/status`;
+		// 查询工作流执行状态 - 使用正确的端点
+        const statusUrl = `${COZE_BASE_URL}/v1/workflows/run/${executeId}`;
 		console.log("Status URL:", statusUrl);
 		
 		const statusResp = await fetch(statusUrl, {
@@ -48,36 +48,62 @@ export async function GET(request: Request) {
 			
 			if (prompt) {
 				return NextResponse.json({
+					success: true,
 					status: "completed",
 					prompt,
-					executeId,
-					debugUrl: statusJson?.debug_url
+					metadata: {
+						executeId,
+						debugUrl: statusJson?.debug_url,
+						timestamp: new Date().toISOString()
+					}
 				});
 			} else {
 				return NextResponse.json({
+					success: false,
 					status: "completed",
 					error: "No prompt in result",
-					raw: statusJson
+					metadata: {
+						executeId,
+						timestamp: new Date().toISOString()
+					},
+					debug: statusJson
 				});
 			}
 		} else if (isFailed) {
 			return NextResponse.json({
+				success: false,
 				status: "failed",
 				error: "Workflow execution failed",
+				metadata: {
+					executeId,
+					timestamp: new Date().toISOString()
+				},
 				details: statusJson?.data?.error || statusJson?.error
 			});
 		} else {
 			// 仍在处理中
 			return NextResponse.json({
+				success: true,
 				status: "processing",
-				executeId,
+				metadata: {
+					executeId,
+					timestamp: new Date().toISOString()
+				},
 				message: "Workflow is still running"
 			});
 		}
 
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Unknown error";
-		console.error("Status check error:", message);
-		return NextResponse.json({ error: message }, { status: 500 });
+		console.error("Status check error:", error);
+		
+		const errorResponse = {
+			success: false,
+			error: message,
+			timestamp: new Date().toISOString(),
+			...(error instanceof Error && { stack: error.stack })
+		};
+		
+		return NextResponse.json(errorResponse, { status: 500 });
 	}
 }

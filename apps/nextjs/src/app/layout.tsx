@@ -11,6 +11,7 @@ import { Toaster } from "@saasfly/ui/toaster";
 
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { ThemeProvider } from "~/components/theme-provider";
+import { Providers } from "~/components/providers";
 import { i18n } from "~/config/i18n-config";
 import { siteConfig } from "~/config/site";
 
@@ -90,17 +91,19 @@ export default function RootLayout({
           fontHeading.variable,
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
-          {children}
-          <Analytics />
-          <SpeedInsights />
-          <Toaster />
-          <TailwindIndicator />
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+          >
+            {children}
+            <Analytics />
+            <SpeedInsights />
+            <Toaster />
+            <TailwindIndicator />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

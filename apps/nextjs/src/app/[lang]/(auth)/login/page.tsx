@@ -1,6 +1,5 @@
 import React from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { cn } from "@saasfly/ui";
@@ -40,29 +39,19 @@ export default async function LoginPage({
       </Link>
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
-          <Image
-            src="/images/avatars/saasfly-logo.svg"
-            className="mx-auto"
-            width="64"
-            height="64"
-            alt=""
-          />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600">
+            <span className="text-2xl font-bold text-white">I2P</span>
+          </div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {dict.login.welcome_back}
+            Image to Prompt
           </h1>
           <p className="text-sm text-muted-foreground">
-            {dict.login.signin_title}
+            将您的图片转换为高质量的 AI 提示词
           </p>
         </div>
-        <UserAuthForm lang={lang} dict={dict.login} />
-        {/* <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            href={`/${lang}/register`}
-            className="hover:text-brand underline underline-offset-4"
-          >
-            {dict.login.singup_title}
-          </Link>
-        </p> */}
+        <div className="mt-6">
+          <UserAuthForm lang={lang} dict={dict.login} />
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,6 @@
 import { getServerSession, NextAuthOptions, User } from "next-auth";
 import { KyselyAdapter } from "@auth/kysely-adapter";
-import GitHubProvider from "next-auth/providers/github";
-import EmailProvider from "next-auth/providers/email";
-
-import { MagicLinkEmail, resend, siteConfig } from "@saasfly/common";
+import GoogleProvider from "next-auth/providers/google";
 
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 
@@ -35,52 +32,30 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
   adapter: KyselyAdapter(db),
+  // 明确设置 NEXTAUTH_URL
+  ...(env.NEXTAUTH_URL && { url: env.NEXTAUTH_URL }),
 
   providers: [
-    GitHubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-      httpOptions: { timeout: 15000 },
-    }),
-    EmailProvider({
-      sendVerificationRequest: async ({ identifier, url }) => {
-        const user = await db
-          .selectFrom("User")
-          .select(["name", "emailVerified"])
-          .where("email", "=", identifier)
-          .executeTakeFirst();
-        const userVerified = !!user?.emailVerified;
-        const authSubject = userVerified
-          ? `Sign-in link for ${(siteConfig as { name: string }).name}`
-          : "Activate your account";
-
-        try {
-          await resend.emails.send({
-            from: env.RESEND_FROM,
-            to: identifier,
-            subject: authSubject,
-            react: MagicLinkEmail({
-              firstName: user?.name ?? "",
-              actionUrl: url,
-              mailType: userVerified ? "login" : "register",
-              siteName: (siteConfig as { name: string }).name,
-            }),
-            // Set this to prevent Gmail from threading emails.
-            // More info: https://resend.com/changelog/custom-email-headers
-            headers: {
-              "X-Entity-Ref-ID": new Date().getTime() + "",
-            },
-          });
-        } catch (error) {
-          console.log(error);
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? [
+      GoogleProvider({
+        clientId: env.GOOGLE_CLIENT_ID,
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
+        httpOptions: {
+          timeout: 30000, // 30秒超时
         }
-      },
-    }),
+      })
+    ] : []),
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // 如果 URL 是相对路径，则基于 baseUrl 构建完整 URL
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // 如果 URL 是同一个域名，则直接返回
+      else if (new URL(url).origin === baseUrl) return url;
+      // 否则返回 baseUrl
+      return baseUrl;
+    },
     session({ token, session }) {
       if (token) {
         if (session.user) {
