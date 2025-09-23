@@ -1,5 +1,6 @@
 import { Inter as FontSans } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 
 import "~/styles/globals.css";
 
@@ -89,6 +90,19 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning translate="no">
       <head>
         <meta name="google" content="notranslate" />
+        {/* Baidu Tongji */}
+        <Script
+          id="baidu-tongji"
+          strategy="afterInteractive"
+        >{`
+          var _hmt = _hmt || [];
+          (function() {
+            var hm = document.createElement('script');
+            hm.src = 'https://hm.baidu.com/hm.js?232d18e8efd7986bc04f12ecda421116';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(hm, s);
+          })();
+        `}</Script>
       </head>
       {/*<Suspense>*/}
       {/*  <PostHogPageview />*/}
