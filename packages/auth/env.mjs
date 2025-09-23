@@ -15,6 +15,7 @@ export const env = createEnv({
     RESEND_FROM: z.string().min(1),
     ADMIN_EMAIL: z.string().optional(),
     IS_DEBUG: z.string().optional(),
+    POSTGRES_URL: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().min(1),
@@ -31,5 +32,6 @@ export const env = createEnv({
     RESEND_FROM: process.env.RESEND_FROM,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     IS_DEBUG: process.env.IS_DEBUG,
+    POSTGRES_URL: process.env.POSTGRES_URL,
   },
 });

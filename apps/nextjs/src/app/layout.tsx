@@ -38,14 +38,22 @@ export const metadata = {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
-  description: siteConfig.description,
+  description:
+    "Image to Prompt Generator — turn any image into high‑quality image prompts. Fast image prompt generation, prompt generator tools, and best practices for AI art.",
   keywords: [
+    // Primary SEO focus
+    "image to prompt",
+    "image to prompt generator",
+    "image prompt",
+    "prompt generator",
+    // Secondary/long-tail variations
+    "image prompt generator",
+    "generate prompts from images",
+    "AI image prompt",
+    // Existing tech keywords (kept for relevancy)
     "Next.js",
-    "Shadcn ui",
-    "Sass",
-    "Fast ",
-    "Simple ",
-    "Easy",
+    "Shadcn UI",
+    "SaaS",
     "Cloud Native",
   ],
   authors: [
@@ -58,8 +66,9 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
+    title: `${siteConfig.name} — Image to Prompt Generator`,
+    description:
+      "Convert images into precise AI prompts. Powerful image prompt generator for creators and teams.",
     siteName: siteConfig.name,
   },
   icons: {

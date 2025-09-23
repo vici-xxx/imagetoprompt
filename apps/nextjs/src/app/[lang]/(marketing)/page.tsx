@@ -13,11 +13,9 @@ export default async function IndexPage({
     <>
       <section className="container py-20">
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
-          Create Better AI Art with <span className="text-primary">Image Prompt</span>
+          {dict.marketing.i2p_title} <span className="text-primary">Image Prompts</span>
         </h1>
-        <p className="mt-6 text-neutral-500 dark:text-neutral-400 max-w-2xl">
-          Inspire ideas, enhance image prompts, and create masterpieces with an all-in-one toolkit.
-        </p>
+        <p className="mt-6 text-neutral-500 dark:text-neutral-400 max-w-2xl" dangerouslySetInnerHTML={{ __html: dict.marketing.i2p_desc }} />
         <div className="mt-8 flex gap-4">
           <Link href={`/${lang}/imageprompt/generator`}><Button>{dict.marketing.get_started}</Button></Link>
           <Link href="#imageprompt-faq"><Button variant="outline">FAQ</Button></Link>
@@ -25,14 +23,14 @@ export default async function IndexPage({
       </section>
 
       <section id="imageprompt-tools" className="container py-16">
-        <h2 className="text-3xl font-semibold">AI 图片提示工具</h2>
-        <p className="mt-2 text-neutral-500 dark:text-neutral-400">覆盖从灵感到生成的完整流程，保持 Saasfly 的配色与样式。</p>
+        <h2 className="text-3xl font-semibold">{dict.marketing.tools_title}</h2>
+        <p className="mt-2 text-neutral-500 dark:text-neutral-400" dangerouslySetInnerHTML={{ __html: dict.marketing.tools_desc }} />
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
-            {title:"图片转提示词",desc:"上传图片，一键生成高质量提示词，提升二次生成效果。",cta:"开始使用"},
-            {title:"提示词增强器",desc:"将你的想法扩写为更具描述性与风格化的提示词。",cta:"立即增强"},
-            {title:"AI 图片生成",desc:"用优化后的提示词快速生成精美图片。",cta:"生成图片"},
-            {title:"AI 图像描述",desc:"自动识别并详细描述图像内容，支持问答。",cta:"生成描述"},
+            {title: dict.marketing.card1_title, desc: dict.marketing.card1_desc, cta: dict.marketing.card1_cta},
+            {title: dict.marketing.card2_title, desc: dict.marketing.card2_desc, cta: dict.marketing.card2_cta},
+            {title: dict.marketing.card3_title, desc: dict.marketing.card3_desc, cta: dict.marketing.card3_cta},
+            {title: dict.marketing.card4_title, desc: dict.marketing.card4_desc, cta: dict.marketing.card4_cta},
           ].map((card)=> (
             <div key={card.title} className="rounded-xl border p-6 bg-background/50">
               <h3 className="text-xl font-semibold">{card.title}</h3>
@@ -49,13 +47,13 @@ export default async function IndexPage({
 
 
       <section id="imageprompt-faq" className="container pb-24">
-        <h2 className="text-3xl font-semibold">常见问题</h2>
+        <h2 className="text-3xl font-semibold">{dict.marketing.faq_title}</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {[
-            {q:"什么是提示词（Image Prompt）？",a:"它是一组指令，帮助 AI 按你的期望生成图片。"},
-            {q:"是否免费？",a:"核心功能免费，可按需升级更多配额。"},
-            {q:"如何保护隐私？",a:"图像实时处理，不做持久化存储。"},
-            {q:"如何写好提示词？",a:"清晰描述主体、场景、风格、光线与细节。"},
+            {q: dict.marketing.faq1_q, a: dict.marketing.faq1_a},
+            {q: dict.marketing.faq2_q, a: dict.marketing.faq2_a},
+            {q: dict.marketing.faq3_q, a: dict.marketing.faq3_a},
+            {q: dict.marketing.faq4_q, a: dict.marketing.faq4_a},
           ].map((item)=> (
             <div key={item.q} className="rounded-xl border p-5 bg-background/50">
               <div className="font-medium">{item.q}</div>
